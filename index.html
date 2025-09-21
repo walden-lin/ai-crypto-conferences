@@ -14,15 +14,111 @@
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             background: linear-gradient(135deg, #0a0a0a 0%, #1a1a2e 50%, #16213e 100%);
+            background-size: 400% 400%;
+            animation: backgroundShift 15s ease infinite;
             color: #ffffff;
             min-height: 100vh;
             line-height: 1.6;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 0, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(0, 255, 136, 0.1) 0%, transparent 50%);
+            animation: floatingOrbs 20s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(45deg, transparent 48%, rgba(0, 212, 255, 0.03) 49%, rgba(0, 212, 255, 0.03) 51%, transparent 52%),
+                linear-gradient(-45deg, transparent 48%, rgba(255, 0, 255, 0.03) 49%, rgba(255, 0, 255, 0.03) 51%, transparent 52%);
+            background-size: 60px 60px;
+            animation: gridMove 30s linear infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes backgroundShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes floatingOrbs {
+            0%, 100% { 
+                transform: translate(0, 0) scale(1);
+                opacity: 0.3;
+            }
+            25% { 
+                transform: translate(30px, -30px) scale(1.1);
+                opacity: 0.5;
+            }
+            50% { 
+                transform: translate(-20px, 20px) scale(0.9);
+                opacity: 0.4;
+            }
+            75% { 
+                transform: translate(20px, 30px) scale(1.05);
+                opacity: 0.6;
+            }
+        }
+
+        @keyframes gridMove {
+            0% { transform: translate(0, 0); }
+            100% { transform: translate(60px, 60px); }
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            right: -50px;
+            bottom: -50px;
+            background: 
+                radial-gradient(circle at 50% 0%, rgba(0, 212, 255, 0.05) 0%, transparent 70%),
+                radial-gradient(circle at 0% 50%, rgba(255, 0, 255, 0.05) 0%, transparent 70%),
+                radial-gradient(circle at 100% 100%, rgba(0, 255, 136, 0.05) 0%, transparent 70%);
+            border-radius: 20px;
+            animation: containerGlow 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        @keyframes containerGlow {
+            0%, 100% { 
+                opacity: 0.3;
+                transform: scale(1);
+            }
+            50% { 
+                opacity: 0.6;
+                transform: scale(1.02);
+            }
         }
 
         .header {
@@ -68,6 +164,30 @@
             border-radius: 15px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .stat::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 212, 255, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .stat:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.2);
+        }
+
+        .stat:hover::before {
+            left: 100%;
         }
 
         .stat-number {
@@ -109,13 +229,25 @@
             color: white;
             font-size: 0.9rem;
             min-width: 150px;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
         }
 
         .filter-group select:focus,
         .filter-group input:focus {
             outline: none;
             border-color: #00d4ff;
-            box-shadow: 0 0 0 2px rgba(0, 212, 255, 0.2);
+            box-shadow: 
+                0 0 0 2px rgba(0, 212, 255, 0.2),
+                0 0 20px rgba(0, 212, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+            transform: translateY(-2px);
+        }
+
+        .filter-group select:hover,
+        .filter-group input:hover {
+            border-color: rgba(0, 212, 255, 0.4);
+            background: rgba(255, 255, 255, 0.07);
         }
 
         .events-grid {
@@ -137,9 +269,24 @@
         }
 
         .event-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(0, 212, 255, 0.5);
-            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+            transform: translateY(-8px) scale(1.02);
+            border-color: rgba(0, 212, 255, 0.8);
+            box-shadow: 
+                0 20px 40px rgba(0, 212, 255, 0.3),
+                0 0 20px rgba(0, 212, 255, 0.2),
+                inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .event-card:hover::before {
+            background: linear-gradient(90deg, #00d4ff, #ff00ff, #00ff88, #00d4ff);
+            background-size: 200% 100%;
+            animation: borderFlow 2s linear infinite;
+        }
+
+        @keyframes borderFlow {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
         }
 
         .event-card::before {
@@ -317,6 +464,7 @@
                 filteredEvents = [...allEvents];
                 updateStats();
                 populateFilters();
+                filterEvents(); // Apply default filters (Conference category)
                 displayEvents();
                 
             } catch (error) {
@@ -374,6 +522,10 @@
                 const option = document.createElement('option');
                 option.value = category;
                 option.textContent = category;
+                // Set Conference as default
+                if (category === 'Conference') {
+                    option.selected = true;
+                }
                 categorySelect.appendChild(option);
             });
 
