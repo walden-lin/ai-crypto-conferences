@@ -37,6 +37,32 @@
             animation: floatingOrbs 20s ease-in-out infinite;
             pointer-events: none;
             z-index: -1;
+            will-change: transform, opacity;
+        }
+
+        /* Reduce animations on mobile for better performance */
+        @media (max-width: 768px) {
+            body::before {
+                animation: floatingOrbs 30s ease-in-out infinite;
+            }
+            
+            body::after {
+                animation: gridMove 45s linear infinite;
+            }
+            
+            .container::before {
+                animation: containerGlow 15s ease-in-out infinite;
+            }
+        }
+
+        /* Disable animations on low-end devices */
+        @media (prefers-reduced-motion: reduce) {
+            body::before,
+            body::after,
+            .container::before,
+            .header h1 {
+                animation: none;
+            }
         }
 
         body::after {
@@ -278,6 +304,32 @@
             background: rgba(255, 255, 255, 0.08);
         }
 
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .event-card:hover {
+                transform: none;
+                border-color: rgba(0, 212, 255, 0.5);
+                box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+            }
+            
+            .stat:hover {
+                transform: none;
+                border-color: rgba(0, 212, 255, 0.3);
+                box-shadow: 0 5px 15px rgba(0, 212, 255, 0.2);
+            }
+            
+            .filter-group select:hover,
+            .filter-group input:hover {
+                transform: none;
+                border-color: rgba(0, 212, 255, 0.4);
+            }
+            
+            .filter-group select:focus,
+            .filter-group input:focus {
+                transform: none;
+            }
+        }
+
         .event-card:hover::before {
             background: linear-gradient(90deg, #00d4ff, #ff00ff, #00ff88, #00d4ff);
             background-size: 200% 100%;
@@ -360,23 +412,186 @@
             font-size: 1.1rem;
         }
 
+        /* Mobile Styles (320px - 768px) */
         @media (max-width: 768px) {
+            .container {
+                padding: 15px;
+            }
+            
+            .header {
+                padding: 20px 0;
+                margin-bottom: 30px;
+            }
+            
             .header h1 {
                 font-size: 2rem;
+                margin-bottom: 8px;
+            }
+            
+            .header p {
+                font-size: 1rem;
+                margin-bottom: 15px;
             }
             
             .stats {
                 flex-direction: column;
                 gap: 15px;
+                margin-bottom: 25px;
+            }
+            
+            .stat {
+                padding: 15px;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
             }
             
             .filters {
                 flex-direction: column;
                 align-items: center;
+                gap: 10px;
+                margin-bottom: 25px;
+            }
+            
+            .filter-group {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .filter-group select,
+            .filter-group input {
+                width: 100%;
+                min-width: auto;
+                padding: 12px 15px;
+                font-size: 1rem;
             }
             
             .events-grid {
                 grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .event-card {
+                padding: 15px;
+            }
+            
+            .event-title {
+                font-size: 1.1rem;
+            }
+        }
+
+        /* Tablet Styles (768px - 1024px) */
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .stats {
+                gap: 20px;
+            }
+            
+            .events-grid {
+                grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+                gap: 18px;
+            }
+            
+            .filters {
+                gap: 12px;
+            }
+        }
+
+        /* Desktop Styles (1024px+) */
+        @media (min-width: 1025px) {
+            .events-grid {
+                grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        /* Large Desktop Styles (1440px+) */
+        @media (min-width: 1440px) {
+            .container {
+                max-width: 1400px;
+            }
+            
+            .events-grid {
+                grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+                gap: 25px;
+            }
+        }
+
+        /* High DPI Displays */
+        @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+            .header h1 {
+                -webkit-font-smoothing: antialiased;
+                -moz-osx-font-smoothing: grayscale;
+            }
+        }
+
+        /* Landscape Mobile */
+        @media (max-width: 768px) and (orientation: landscape) {
+            .header {
+                padding: 15px 0;
+            }
+            
+            .header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .stats {
+                flex-direction: row;
+                gap: 10px;
+            }
+            
+            .stat {
+                padding: 10px;
+            }
+            
+            .stat-number {
+                font-size: 1.2rem;
+            }
+        }
+
+        /* iOS Safari specific fixes */
+        @supports (-webkit-touch-callout: none) {
+            .filter-group select,
+            .filter-group input {
+                -webkit-appearance: none;
+                border-radius: 8px;
+            }
+            
+            .event-card {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+        }
+
+        /* Android Chrome specific fixes */
+        @media screen and (-webkit-min-device-pixel-ratio: 0) {
+            .filter-group select {
+                background-image: none;
+            }
+        }
+
+        /* Ensure consistent font rendering across devices */
+        .header h1,
+        .event-title,
+        .stat-number {
+            text-rendering: optimizeLegibility;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        /* Fix for iOS viewport units */
+        @media screen and (max-width: 768px) {
+            .container {
+                min-height: 100vh;
+                min-height: -webkit-fill-available;
             }
         }
     </style>
@@ -416,7 +631,6 @@
             <div class="filter-group">
                 <label for="category">Category</label>
                 <select id="category">
-                    <option value="">All Categories</option>
                 </select>
             </div>
             
@@ -515,8 +729,8 @@
         }
 
         function populateFilters() {
-            // Categories
-            const categories = [...new Set(allEvents.map(event => event.category))].sort();
+            // Categories - only Conference and Hackathon
+            const categories = ['Conference', 'Hackathon'];
             const categorySelect = document.getElementById('category');
             categories.forEach(category => {
                 const option = document.createElement('option');
@@ -567,7 +781,7 @@
                     return false;
                 }
                 
-                // Category filter
+                // Category filter - if no category selected, show all
                 if (category && event.category !== category) {
                     return false;
                 }
